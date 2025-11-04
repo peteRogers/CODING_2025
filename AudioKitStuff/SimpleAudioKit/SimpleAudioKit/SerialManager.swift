@@ -15,12 +15,46 @@ class SerialManager {
     var receivedText: String = ""
     var lastLine: String = "Waiting for data"
     var latestValueFromArduino: String = ""
-    var latestValuesFromArduino: [Int: Float] = [:]   // Stores values as dictionary of Int keys and Float values
+   // var latestValuesFromArduino: [Int: Float] = [:]   // Stores values as dictionary of Int keys and Float values
     var errorMessage: String?
     
     // MARK: - Private properties
     private var handle: FileHandle?
     private var readerTask: Task<Void, Never>?
+    private var updateContinuations: [UUID: AsyncStream<[Int: Float]>.Continuation] = [:]
+
+     // 2) Change this property to notify listeners on change
+     var latestValuesFromArduino: [Int: Float] = [:] {
+         didSet {
+             for c in updateContinuations.values {
+                 c.yield(latestValuesFromArduino)
+             }
+         }
+     }
+
+     // 3) Add this continuous stream
+    @MainActor
+    var updates: AsyncStream<[Int: Float]> {
+        AsyncStream { continuation in
+            let id = UUID()
+
+            // Register the continuation on the main actor
+            Task { @MainActor in
+                self.updateContinuations[id] = continuation
+                // Optionally send current snapshot immediately
+                continuation.yield(self.latestValuesFromArduino)
+            }
+
+            // Clean up on termination, on the main actor
+            continuation.onTermination = { [weak self] _ in
+                // hop safely to the main actor before touching self
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    self.updateContinuations[id] = nil
+                }
+            }
+        }
+    }
     
     // MARK: - Port management
     init(simulate: Bool = false) {
@@ -208,6 +242,9 @@ class SerialManager {
         let scaled = (clampedValue - inMin) / inRange
         return outMin + (scaled * outRange)
     }
+    
+    
+    
 }
 
 extension Float {
@@ -219,6 +256,9 @@ extension Float {
         return outMin + (scaled * outRange)
     }
 }
+
+
+
 
 
 // In SerialManager.swift (or its own file)

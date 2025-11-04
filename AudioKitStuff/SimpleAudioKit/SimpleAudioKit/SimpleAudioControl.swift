@@ -12,36 +12,39 @@ import SoundpipeAudioKit
 import DunneAudioKit
 import Observation
 
-
 @Observable
 final class SimpleAudioControl {
+    private var serial: SerialManager?
     private let engine = AudioEngine()
     private let mixer = Mixer()
     private let player = AudioPlayer()
-    private var reverb:ZitaReverb?
-    private var chorus: Chorus?
-    
-    
+    //shared variables
+    var playerVolume: Float = 0.0 {didSet { player.volume = playerVolume } }
 
     func setup() {
-        print("restarting audio engine")
+        print("starting audio engine")
+        //serial = SerialManager()
+        //observeSerial()
         do {
-            let url = Bundle.main.url(forResource: "tropBird", withExtension: "wav")
-            try player.load(url: url!, buffered: true)
+            //loading player
+            try player.load(url: Bundle.main.url(forResource: "tropBird", withExtension: "wav")!, buffered: true)
             player.isLooping = true
-            reverb = ZitaReverb(player)
-            reverb?.dryWetMix = 0
-            chorus = Chorus(reverb!)
-            chorus?.dryWetMix = 0
-            chorus?.depth = 1
-            chorus?.frequency = 5.0
-            mixer.addInput(chorus!)
+            //putting into the mixer
+            mixer.addInput(player)
             engine.output = mixer
-            freopen("/dev/null", "w", stderr)
+            //starting the audio engine
             try engine.start()
             print("🎧 Engine started.")
+            //freopen("/dev/null", "w", stderr)
         } catch {
             print("❌ Failed to start engine: \(error)")
+        }
+    }
+
+    func receiveArduinoValues(values: [Int:Float]){
+        if let v0 = values[1] {
+            print("index 0 ->", v0)
+            playerVolume = v0.mapped(from: 0.0, 1023.0, to: 0.0, 1.0)
         }
     }
 
@@ -49,7 +52,6 @@ final class SimpleAudioControl {
         print("trying to play")
         player.stop()
         player.play()
-        
     }
 
     func stop() {
@@ -57,23 +59,20 @@ final class SimpleAudioControl {
        player.stop()
     }
     
-    func setVolume(value: Float) {
-        player.volume = AUValue(value)
-      
-    }
-    
-    func setReverbMix(value: Float) {
-        guard let reverb = reverb else { return } // <-- prevent invalid parameter call
-        reverb.dryWetMix = value
-    }
-    
-    func setChorusMix(value: Float) {
-        guard let chorus = chorus else { return } // <-- prevent invalid parameter call
-        chorus.dryWetMix = value
-    }
-    
     func stopEngine() {
         engine.stop()
         print("🛑 Engine stopped.")
+    }
+}
+
+
+extension SimpleAudioControl{
+    func observeSerial() {
+        guard let serial else { return }
+        Task { @MainActor in
+            for await values in serial.updates {
+                self.receiveArduinoValues(values: values)
+            }
+        }
     }
 }
