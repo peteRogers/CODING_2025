@@ -216,4 +216,29 @@ struct ObjectView: View {
 #Preview { ObjectView() }
 
 ```
+---
+## AudioKit flanger
+```swift
+flanger = Flanger(chorus!)
+            flanger?.depth = 1
+            flanger?.dryWetMix = 1
+            mixer.addInput(flanger!)
+```
+func to set params
 
+```swift
+func setFlanger(value: Float) {
+        guard let flanger = flanger else { return } // <-- prevent invalid parameter call
+        print(value)
+        flanger.feedback = value
+        flanger.frequency = value * 10.0
+    }
+```
+attached to contentView to be able to send the arduino value
+```swift
+.onChange(of: serial.latestValuesFromArduino[0]) { _, newValue in
+            if let val = newValue{
+                simpleAudio.setFlanger(value: val.mapped(from: 0, 1200, to: 1.0, 0.0))
+            }
+        }
+```
