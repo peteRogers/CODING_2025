@@ -15,7 +15,6 @@ class SerialManager {
     var receivedText: String = ""
     var lastLine: String = "Waiting for data"
     var latestValueFromArduino: String = ""
-   // var latestValuesFromArduino: [Int: Float] = [:]   // Stores values as dictionary of Int keys and Float values
     var errorMessage: String?
     
     // MARK: - Private properties
