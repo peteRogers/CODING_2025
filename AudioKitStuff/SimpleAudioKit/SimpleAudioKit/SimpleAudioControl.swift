@@ -12,34 +12,31 @@ import SoundpipeAudioKit
 import DunneAudioKit
 import Observation
 
-@Observable
-final class SimpleAudioControl {
+@Observable class SimpleAudioControl {
     private var serial: SerialManager?
     private let engine = AudioEngine()
     private let mixer = Mixer()
     private let player = AudioPlayer()
-    //shared variables
     var playerVolume: Float = 0.0 {didSet { player.volume = playerVolume } }
 
     func setup() {
-        print("starting audio engine")
-        //serial = SerialManager()
-        //observeSerial()
         do {
-            //loading player
             try player.load(url: Bundle.main.url(forResource: "tropBird", withExtension: "wav")!, buffered: true)
             player.isLooping = true
-            //putting into the mixer
             mixer.addInput(player)
             engine.output = mixer
-            //starting the audio engine
             try engine.start()
             print("🎧 Engine started.")
-            //freopen("/dev/null", "w", stderr)
+            freopen("/dev/null", "w", stderr)
         } catch {
             print("❌ Failed to start engine: \(error)")
         }
+        serial = SerialManager()
+        observeSerial()
     }
+    
+    
+    //MARK: Arduino function
 
     func receiveArduinoValues(values: [Int:Float]){
         if let v0 = values[1] {
@@ -48,6 +45,8 @@ final class SimpleAudioControl {
         }
     }
 
+    //MARK: controlling functions
+    
     func play() {
         print("trying to play")
         player.stop()
