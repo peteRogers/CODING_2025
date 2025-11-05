@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct FlameControlPanel: View {
-    @Binding var v1: Float
-    @Binding var v2: Float
-    var serial: SerialManager
+   @Binding var serialModel: SerialModel
+   
+    
     
     var body: some View {
         VStack {
             VStack(alignment: .leading) {
-                Text("v1: \(v1, specifier: "%.2f")")
+                Text("v1: \(serialModel.v1, specifier: "%.2f")")
                     .foregroundStyle(.white).padding(10)
-                Slider(value: $v1, in: 0.0...0.3)
+                Slider(value: $serialModel.v1, in: 0.0...0.3)
                     .padding(.horizontal, 20)
                     .padding(.bottom, 10)
             }
@@ -27,9 +27,31 @@ struct FlameControlPanel: View {
             )
             
             VStack(alignment: .leading) {
-                Text("v2: \(v2, specifier: "%.2f")")
+                Text("v2: \(serialModel.v2, specifier: "%.2f")")
                     .foregroundStyle(.white).padding(10)
-                Slider(value: $v2, in: 0.0...0.6)
+                Slider(value: $serialModel.v2, in: 0.0...0.6)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 10)
+            }
+            .background(
+                Color.white.opacity(0.6)
+                    .cornerRadius(10)
+            )
+            VStack(alignment: .leading) {
+                Text("v3: \(serialModel.v3, specifier: "%.2f")")
+                    .foregroundStyle(.white).padding(10)
+                Slider(value: $serialModel.v3, in: 0.0...0.3)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 10)
+            }
+            .background(
+                Color.white.opacity(0.6)
+                    .cornerRadius(10)
+            )
+            VStack(alignment: .leading) {
+                Text("v4: \(serialModel.v4, specifier: "%.2f")")
+                    .foregroundStyle(.white).padding(10)
+                Slider(value: $serialModel.v4, in: 0.0...1.5)
                     .padding(.horizontal, 20)
                     .padding(.bottom, 10)
             }
@@ -38,11 +60,7 @@ struct FlameControlPanel: View {
                     .cornerRadius(10)
             )
             
-            HStack {
-                Text("Serial \(serial.lastLine)")
-                    .foregroundStyle(.white)
-                Spacer()
-            }
+
         }
         .frame(width: 400)
     }
@@ -50,13 +68,10 @@ struct FlameControlPanel: View {
 
 struct ContentView: View {
    
-    // @Bindable var serial: SerialManager
-    var serial: SerialManager
+    @State var serialModel = SerialModel()
 
     private let date = Date()
-    @State var v1:Float = 0.26
-    @State var v2:Float = 0.60
-    @State var showPanel:Bool = false
+    @State var showPanel:Bool = true
     var body: some View {
         ZStack{
             
@@ -72,8 +87,8 @@ struct ContentView: View {
                             .float(time),
                             .float(0.02),//bloom
                             .float2(0.07, 0.1),//hoz and vert flutter
-                            .float3((v1), v2, (try? serial.mapRange(index: 0, inMin: 0, inMax: 1000, outMin: 0.3, outMax: 0.0)) ?? 0.0),
-                            .float((try? serial.mapRange(index: 0, inMin: 0, inMax: 1000, outMin: 1.5, outMax: 0)) ?? 0.0)
+                            .float3(serialModel.v1, serialModel.v2, serialModel.v3),
+                            .float(serialModel.v4)
                             
                         )
                     )
@@ -84,15 +99,17 @@ struct ContentView: View {
             }
             if(showPanel){
                 HStack {
-                    FlameControlPanel(v1: $v1, v2: $v2, serial: serial)
+                    FlameControlPanel(serialModel: $serialModel)
                     Spacer()
                 }
                 .padding(50)
             }
+        }.onAppear(){
+            //serialModel.startSerial()
         }
     }
 }
 
 #Preview {
-    ContentView(serial: MockSerialManager())
+    ContentView()
 }
