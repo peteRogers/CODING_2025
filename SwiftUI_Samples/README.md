@@ -1,3 +1,28 @@
+# Animation with TimeLineView
+```swift
+        ZStack {
+            TimelineView(.animation) { timeline in
+                let time = timeline.date.timeIntervalSinceReferenceDate
+                let pulsate = abs(sin(time))
+                let angle = pulsate * 360.0
+                ZStack{
+                    Rectangle()
+                        .fill(Color(hue: pulsate, saturation: 1, brightness: 1))
+                        .cornerRadius(pulsate*400)
+                    Text("Hello, world!")
+                        .fontWidth(.expanded)
+                        .fontWeight(.bold)
+                        .font(.system(size: pulsate*100))
+                        .rotationEffect(.degrees(angle*10))
+                        .foregroundStyle(Color(hue: 1-pulsate, saturation: 0.5, brightness: 1))
+                }
+            }
+        }
+        .padding()
+        .ignoresSafeArea(edges: .all)
+```
+---
+
 # 🌀 DistortedTextColumn
 
 **`DistortedTextColumn`** is a SwiftUI view that renders multiline text in a fixed-width column using **Core Text** and **Canvas**, then applies a smooth **sine-wave distortion** to create a living, rippling text effect.
