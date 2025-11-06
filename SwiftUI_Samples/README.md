@@ -1,4 +1,4 @@
-# Animation with TimeLineView
+# Animation with TimelineView
 ```swift
         ZStack {
             TimelineView(.animation) { timeline in
