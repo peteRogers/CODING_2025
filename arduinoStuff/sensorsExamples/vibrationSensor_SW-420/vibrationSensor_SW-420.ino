@@ -1,19 +1,30 @@
 int vibr_Pin = 3;
 
-void setup(){
+void setup() {
   pinMode(vibr_Pin, INPUT);
   Serial.begin(115200);
 }
 
-void loop(){
-  long measurement = measureVib();
-  if(measurement > 0){
-    Serial.println(measurement);
-    delay(2);
-  }
-}
+void loop() {
+  long measurement = pulseIn(vibr_Pin, HIGH);
 
-long measureVib(){
-  long measurement = pulseIn(vibr_Pin, HIGH);  //wait for the pin to get HIGH and returns measurement
-  return measurement;
+  if (measurement > 0) {              // vibration detected
+    long maxValue = measurement;      // start tracking the highest value
+    unsigned long startTime = millis();
+
+    // keep sampling until the knock finishes (no signal for 100 ms)
+    while (millis() - startTime < 50) {
+      long newMeasurement = pulseIn(vibr_Pin, HIGH, 50000); // timeout = 50 ms
+      if (newMeasurement > 0) {
+        if (newMeasurement > maxValue) maxValue = newMeasurement;
+        startTime = millis(); // reset timer each time vibration continues
+      }
+    }
+
+    // when no more pulses are detected for 100 ms, print the max value
+    Serial.print("0>");
+    Serial.print(maxValue);
+    Serial.println("<");
+    delay(20); // brief pause to avoid detecting same knock twice
+  }
 }
