@@ -2,7 +2,7 @@ int vibr_Pin = 3;
 
 void setup() {
   pinMode(vibr_Pin, INPUT);
-  Serial.begin(115200);
+  Serial.begin(9600);
 }
 
 void loop() {
