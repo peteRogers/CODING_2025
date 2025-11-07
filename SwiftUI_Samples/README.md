@@ -46,33 +46,26 @@
         TimelineView(.animation) { timeline in
             // Compute a smooth, looping time value
             let time = timeline.date.timeIntervalSinceReferenceDate
-            let spinDeg = (time * 12).truncatingRemainder(dividingBy: 360) // rotation speed (deg/sec)
-            let pulsate = abs(sin(time/8))
+            let spinDeg = (time * 12).truncatingRemainder(dividingBy: 360)
             // Make the camera glide in a tiny circle around Lewisham
-            let radius = 0.0008 // degrees (~90m). Increase for bigger path
-            let dx = radius * cos(time * 0.08)
-            let dy = radius * sin(time * 0.08)
+            let radius = 0.0008
+            let dx = radius * cos(time * 0.008)
+            let dy = radius * sin(time * 0.008)
             let center = CLLocationCoordinate2D(latitude: 51.4613 + dy, longitude: -0.0106 + dx)
-            
             let camera = MapCamera(
                 centerCoordinate: center,
                 distance: 1000,   // zoom level (meters). Increase to zoom out
                 heading: spinDeg,
-                pitch: 80
-            )
-//            
+                pitch: 80)
             ZStack {
                 Map(position: .constant(.camera(camera))) {
                     // You can add content here, e.g. Marker(), UserAnnotation(), etc.
                 }
-            
                 .mapStyle(.imagery(elevation: .realistic))
-              
-               .allowsHitTesting(false)             // disable all user interaction
-               .disabled(true)                      // belt-and-braces: no gestures
-          }
-           .ignoresSafeArea(edges: .all)
-        }
+                .allowsHitTesting(false)
+                .disabled(true)
+            }
+        }.ignoresSafeArea(edges: .all)
 ```
 ---
 ## RealityView
