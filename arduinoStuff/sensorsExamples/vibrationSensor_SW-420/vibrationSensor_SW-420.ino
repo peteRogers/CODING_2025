@@ -25,6 +25,6 @@ void loop() {
     Serial.print("0>");
     Serial.print(maxValue);
     Serial.println("<");
-    delay(20); // brief pause to avoid detecting same knock twice
+    delay(200); // brief pause to avoid detecting same knock twice
   }
 }

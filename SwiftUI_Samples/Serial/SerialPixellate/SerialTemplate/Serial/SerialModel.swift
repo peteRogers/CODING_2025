@@ -10,7 +10,7 @@ import Foundation
 
 @Observable class SerialModel {
     private var serial: SerialManager?
-    var pixel:Float = 0.0
+    var pixel:Float = 0.0001
     var timer:Timer?
 
     func startSerial(){
@@ -34,9 +34,10 @@ import Foundation
     func startRundownTimer(){
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0,  repeats: true){[weak self] _ in
-            if(self!.pixel > 0.0){
-                self!.pixel -= self!.pixel / 50.0
+            if(self!.pixel > 0.001){
+                self!.pixel -= self!.pixel / 300.0
             }else{
+                self!.pixel = 0.001
                 self?.timer?.invalidate()
             }
         }
