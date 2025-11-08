@@ -32,6 +32,8 @@ void loop() {
   accel.getEvent(&event);
   
   accelX.add(event.acceleration.x);
-  Serial.println(accelX.get());
+  Serial.print("0>")
+  Serial.print(accelX.get());
+  Serial.println("<");
   delay(5);
 }
