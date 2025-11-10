@@ -17,7 +17,12 @@ import Observation
     private let engine = AudioEngine()
     private let mixer = Mixer()
     private let player = AudioPlayer()
-    var playerVolume: Float = 0.0 {didSet { player.volume = playerVolume } }
+   
+    var playerVolume: Float = 1.0 {
+        didSet {
+            player.volume = playerVolume
+        }
+    }
 
     func setup() {
         do {
@@ -31,8 +36,8 @@ import Observation
         } catch {
             print("❌ Failed to start engine: \(error)")
         }
-        serial = SerialManager()
-        observeSerial()
+//        serial = SerialManager()
+//        observeSerial()
     }
     
     
@@ -56,6 +61,13 @@ import Observation
     func stop() {
        print("trying to stop")
        player.stop()
+    }
+    
+    deinit{
+        player.stop()
+        player.detach()
+        engine.stop()
+        print("🛑 Engine stopped.")
     }
     
     func stopEngine() {
