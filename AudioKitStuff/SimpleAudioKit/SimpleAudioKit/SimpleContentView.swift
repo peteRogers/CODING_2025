@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ContentView: View{
-    @State private var simpleAudio = SimpleAudioControl()
-    //@State private var simpleAudio = GuitarAudioControl()
+    //@State private var simpleAudio = SimpleAudioControl()
+    @State private var simpleAudio = GuitarAudioControl()
     
     var body: some View {
         VStack(spacing: 50){

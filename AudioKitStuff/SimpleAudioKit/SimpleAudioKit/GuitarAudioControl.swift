@@ -25,7 +25,7 @@ import Observation
     }
     
     func setup() {
-        let scale = [57,60, 62, 65, 66, 67, 69, 71, 73, 75]
+        let scale = [60, 62, 63, 65, 67, 68, 71]
         for key in scale{
             let p = PluckedString()
             p.frequency = key.midiNoteToFrequency()
@@ -53,7 +53,13 @@ import Observation
         for (key, diff) in differences {
             if(diff.new == 1){
                 print(key)
-                pluckedStrings[key].trigger()
+               
+                if pluckedStrings.indices.contains(key) {
+                    pluckedStrings[key].trigger()
+                } else {
+                    print("⚠️ Out-of-range key: \(key)")
+                }
+               
             }
         }
     }
