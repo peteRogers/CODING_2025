@@ -51,7 +51,7 @@ import Observation
         let differences = compare(old: prevVals, new: values)
         prevVals = values
         for (key, diff) in differences {
-            if(diff.new == 1){
+            if(diff.new == 0){
                 print(key)
                
                 if pluckedStrings.indices.contains(key) {
