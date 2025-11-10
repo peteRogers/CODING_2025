@@ -4,7 +4,7 @@ Servo myServo;
 int input;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   myServo.attach(9);
   
 }
