@@ -25,7 +25,7 @@
 ## 🗺️ Mapping 
 
 ```swift
-    @State private var cameraPositionB: MapCameraPosition = .camera(
+    @State private var cameraPositionA: MapCameraPosition = .camera(
         MapCamera(
             centerCoordinate: CLLocationCoordinate2D(latitude: 51.4613, longitude: -0.0106), // Lewisham
             distance: 100,
