@@ -17,4 +17,16 @@ void loop() {
 }
 
 ```
+### Pixellate shader code snippet
+```swift
+            Image("stainWindow")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .distortionEffect(
+                    ShaderLibrary.pixellate(
+                        .float(serialModel.pixel * 100)
+                    ),
+                    maxSampleOffset: .zero
+                )
+```
 
