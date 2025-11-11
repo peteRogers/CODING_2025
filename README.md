@@ -64,3 +64,96 @@ void loop() {
                 ),maxSampleOffset: .zero
                 )
 ```
+---
+### AudioKit reversing sound
+```swift
+//
+//  SimpleAudioControl.swift
+//  AudioKit_Sampler
+//
+//  Created by Peter Rogers on 21/10/2025.
+//
+
+import AudioKit
+import AudioKitEX
+import AVFoundation
+import SoundpipeAudioKit
+import DunneAudioKit
+import Observation
+
+@Observable class SimpleAudioControl {
+    private var serial: SerialManager?
+    private let engine = AudioEngine()
+    private let mixer = Mixer()
+    private let player = AudioPlayer()
+    private var reverser:Reverser?
+   
+    var playerVolume: Float = 1.0 {
+        didSet {
+            reverser!.setRate(rate:playerVolume)
+        }
+    }
+
+    func setup() {
+        do {
+            reverser = Reverser(fileName: "tropBird.wav")
+            mixer.addInput(reverser!.getMixer())
+            engine.output = mixer
+            try engine.start()
+            print("🎧 Engine started.")
+            freopen("/dev/null", "w", stderr)
+        } catch {
+            print("❌ Failed to start engine: \(error)")
+        }
+        serial = SerialManager()
+        observeSerial()
+    }
+    
+    
+    //MARK: Arduino function
+
+    func receiveArduinoValues(values: [Int:Float]){
+        if let v0 = values[0] {
+            print("index 0 ->", v0)
+            playerVolume = v0.mapped(from: 0.0, 1023.0, to: -1.0, 1.0)
+        }
+    }
+
+    //MARK: controlling functions
+    
+    func play() {
+        print("trying to play")
+        reverser!.stop()
+        reverser!.play()
+    }
+
+    func stop() {
+       print("trying to stop")
+       reverser!.stop()
+    }
+    
+    deinit{
+        reverser!.stop()
+        //reverser!.detach()
+        engine.stop()
+        print("🛑 Engine stopped.")
+    }
+    
+    func stopEngine() {
+        engine.stop()
+        print("🛑 Engine stopped.")
+    }
+}
+
+
+extension SimpleAudioControl{
+    func observeSerial() {
+        guard let serial else { return }
+        Task { @MainActor in
+            for await values in serial.updates {
+                self.receiveArduinoValues(values: values)
+            }
+        }
+    }
+}
+```
