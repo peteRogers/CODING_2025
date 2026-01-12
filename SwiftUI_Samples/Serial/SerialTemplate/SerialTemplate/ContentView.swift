@@ -11,10 +11,12 @@ struct ContentView: View {
     @State private var serialModel = SerialModel()
     var body: some View {
         VStack {
-            Slider(value: $serialModel.val0, in: 0...1024)
-                .padding(.horizontal, 200)
-            Text("\(serialModel.serial?.latestValuesFromArduino[1] ?? 0)")
+            
+            Text("\(serialModel.val0)")
+           
         }
+        
+        
         .onAppear {
             serialModel.startSerial()
         }
