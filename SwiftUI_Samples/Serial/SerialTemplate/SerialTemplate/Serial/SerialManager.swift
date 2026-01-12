@@ -159,34 +159,28 @@ class SerialManager {
                     while let newlineIndex = buffer.firstIndex(of: newline) {
                         let lineData = buffer[..<newlineIndex]
                         buffer.removeSubrange(..<buffer.index(after: newlineIndex))
-                        
-                        if let line = String(data: lineData, encoding: .utf8)?
-                            .trimmingCharacters(in: .whitespacesAndNewlines),
-                           !line.isEmpty {
-                            await MainActor.run {
-                                self.receivedText += line + "\n"
-                                self.lastLine = line
-                                // 💡 Parse custom Arduino format: e.g. "0>123<1>456<"
-                                var firstValue: Float?
-                                let segments = line.split(separator: "<")
-                                for segment in segments {
-                                    if segment.isEmpty { continue }
-                                    let parts = segment.split(separator: ">")
-                                    if parts.count == 2,
-                                       let id = Int(parts[0]),
-                                       let value = Float(parts[1]) {
-                                        self.latestValuesFromArduino[id] = value
-                                        if firstValue == nil {
-                                            firstValue = value
-                                        }
-                                    }
-                                }
-                                if !segments.isEmpty {
-                                    // For compatibility, set latestValueFromArduino to first parsed value
-                                    self.latestValueFromArduino = firstValue.map { String($0) } ?? ""
-                                }
-                                // self.commandHandler?.handleCommand(line)
-                            }
+
+                        guard var line = String(data: lineData, encoding: .utf8) else { continue }
+                        line = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                        guard !line.isEmpty else { continue }
+
+                        await MainActor.run {
+                            self.receivedText += line + "\n"
+                            self.lastLine = line
+                            print(self.lastLine)
+                            // ✅ Parse "id:value" (e.g. "0:100")
+                            let parts = line.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)
+                            guard parts.count == 2 else { return }
+
+                            let idStr = parts[0].trimmingCharacters(in: .whitespacesAndNewlines)
+                            let valStr = parts[1].trimmingCharacters(in: .whitespacesAndNewlines)
+
+                            guard let id = Int(idStr),
+                                  let value = Float(valStr)
+                            else { return }
+
+                            self.latestValuesFromArduino[id] = value   // ✅ accepts new IDs automatically
+                            self.latestValueFromArduino = String(value)
                         }
                     }
                     

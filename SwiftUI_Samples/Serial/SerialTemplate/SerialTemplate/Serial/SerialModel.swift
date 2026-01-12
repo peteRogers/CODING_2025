@@ -8,8 +8,8 @@
 import Observation
 
 @Observable class SerialModel {
-    private var serial: SerialManager?
-    var pixel:Float = 0.0
+    var serial: SerialManager?
+    var val0:Float = 0.0
     
     
     func startSerial(){
@@ -17,15 +17,16 @@ import Observation
         observeSerial()
     }
     
-    //MARK: Arduino function
+    //MARK: work on arduino values to create logic based on values.
     
     func receiveArduinoValues(values: [Int:Float]){
-        if let v0 = values[1] {
-           print("index 0 ->", v0)
-           pixel = v0.mapped(from: 0.0, 1023.0, to: 0.0, 1.0)
+        if let v0 = values[0] {
+            val0 = v0 / 1024.0
         }
     }
     
+    
+ //MARK: leave alone
     func observeSerial() {
         guard let serial else { return }
         Task { @MainActor in
