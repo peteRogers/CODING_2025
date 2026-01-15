@@ -26,14 +26,29 @@ void setup() {
   
 }
 
+
 void loop() {
-  /* Get a new sensor event */ 
-  sensors_event_t event; 
+  sensors_event_t event;
   accel.getEvent(&event);
-  
-  accelX.add(event.acceleration.x);
-  Serial.print("0>")
-  Serial.print(accelX.get());
-  Serial.println("<");
+
+  float ax = event.acceleration.x;
+  float ay = event.acceleration.y;
+  float az = event.acceleration.z;
+
+  // total acceleration magnitude
+  float magnitude = sqrt(ax*ax + ay*ay + az*az);
+
+  // remove gravity
+  float movement = abs(magnitude - 9.81);
+
+  Serial.print("0:");
+  Serial.println(movement);
+  Serial.print("1:");
+  Serial.println(ax);
+  Serial.print("2:");
+  Serial.println(ay);
+  Serial.print("3:");
+  Serial.println(az);
+
   delay(5);
 }
