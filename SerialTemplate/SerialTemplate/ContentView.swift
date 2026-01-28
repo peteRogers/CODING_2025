@@ -23,7 +23,7 @@ struct ContentView: View {
                 .fill(.blue)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .scaleEffect(CGFloat(serialModel.val0/1024.0))
-            Slider(value: $value, in: 0...180)
+            Slider(value: $value, in: 0...4096)
                 .onChange(of: value) { oldValue, newValue in
                    serialModel.sendArduinoValue(val: Float(newValue))
                    
@@ -36,8 +36,8 @@ struct ContentView: View {
         
         .onAppear {
             serialModel.startSerial()
-            audio.setup()
-            audio.play()
+            //audio.setup()
+           // audio.play()
         }
     }
 }
