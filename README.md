@@ -10,9 +10,8 @@ void setup() {
 
 void loop() {
   int sensor = analogRead(A0);
-  Serial.print("0>");
-  Serial.print(sensor);
-  Serial.println(">");
+  Serial.print("0:");
+  Serial.println(sensor);
   delay(10);
 }
 
