@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var serialModel = SerialModel()
+    @State private var value = 0.5
     var body: some View {
         VStack {
             
@@ -17,7 +18,12 @@ struct ContentView: View {
                        .fill(.blue)
                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                        .scaleEffect(CGFloat(serialModel.val0/1024.0))
-                       
+            Slider(value: $value, in: 0...180)
+                   .onChange(of: value) { oldValue, newValue in
+                       serialModel.sendArduinoValue(val: Float(newValue))
+                   }
+                   .padding()
+                   Spacer()
            
         }
         

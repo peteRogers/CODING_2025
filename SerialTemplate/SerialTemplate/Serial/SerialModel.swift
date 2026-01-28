@@ -30,6 +30,11 @@ import Observation
         }
     }
     
+    func sendArduinoValue(val: Float){
+        let s = "0:\(val)"
+        serial?.send(s)
+    }
+    
     
  //MARK: leave alone
     func observeSerial() {

@@ -13,8 +13,8 @@ struct SerialTemplateApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentViewShader()
-            //ContentView()
+            //ContentViewShader()
+            ContentView()
         }
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .background || newPhase == .inactive {
