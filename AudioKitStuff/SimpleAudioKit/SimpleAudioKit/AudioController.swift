@@ -6,14 +6,10 @@
 //
 
 import AudioKit
-import AudioKitEX
 import AVFoundation
-import SoundpipeAudioKit
-import DunneAudioKit
 import Observation
 
-@Observable class SimpleAudioControl {
-    private var serial: SerialManager?
+@Observable class AudioController {
     private let engine = AudioEngine()
     private let mixer = Mixer()
     private let player = AudioPlayer()
@@ -36,8 +32,6 @@ import Observation
         } catch {
             print("❌ Failed to start engine: \(error)")
         }
-//        serial = SerialManager()
-//        observeSerial()
     }
     
     
@@ -77,13 +71,3 @@ import Observation
 }
 
 
-extension SimpleAudioControl{
-    func observeSerial() {
-        guard let serial else { return }
-        Task { @MainActor in
-            for await values in serial.updates {
-                self.receiveArduinoValues(values: values)
-            }
-        }
-    }
-}

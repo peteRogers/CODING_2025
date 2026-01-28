@@ -65,7 +65,7 @@ import Observation
     }
     
     func play(){
-        
+        pluckedStrings[0].trigger()
     }
     
     func stop(){
