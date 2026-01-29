@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F4E24972F2B9005009334BE /* SoundpipeAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2F4E24962F2B9005009334BE /* SoundpipeAudioKit */; };
 		2F60CBCB2F1F82D500EDE2F5 /* stainWindow.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F60CBCA2F1F82D500EDE2F5 /* stainWindow.png */; };
 		2F60CBCC2F1F82D500EDE2F5 /* Kaleidoscope.metal in Sources */ = {isa = PBXBuildFile; fileRef = 2F60CBC92F1F82D500EDE2F5 /* Kaleidoscope.metal */; };
 		2FFB9F722F2A378C007F7412 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2FFB9F712F2A378C007F7412 /* AudioKit */; };
@@ -31,6 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F4E24972F2B9005009334BE /* SoundpipeAudioKit in Frameworks */,
 				2FFB9F722F2A378C007F7412 /* AudioKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -77,6 +79,7 @@
 			name = SerialTemplate;
 			packageProductDependencies = (
 				2FFB9F712F2A378C007F7412 /* AudioKit */,
+				2F4E24962F2B9005009334BE /* SoundpipeAudioKit */,
 			);
 			productName = SerialTemplate;
 			productReference = 2FD558D32EBB835C00423216 /* SerialTemplate.app */;
@@ -108,6 +111,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				2FFB9F702F2A378C007F7412 /* XCRemoteSwiftPackageReference "AudioKit" */,
+				2F4E24952F2B9005009334BE /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2FD558D42EBB835C00423216 /* Products */;
@@ -374,6 +378,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		2F4E24952F2B9005009334BE /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/SoundpipeAudioKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.3;
+			};
+		};
 		2FFB9F702F2A378C007F7412 /* XCRemoteSwiftPackageReference "AudioKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/AudioKit/AudioKit.git";
@@ -385,6 +397,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2F4E24962F2B9005009334BE /* SoundpipeAudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2F4E24952F2B9005009334BE /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */;
+			productName = SoundpipeAudioKit;
+		};
 		2FFB9F712F2A378C007F7412 /* AudioKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 2FFB9F702F2A378C007F7412 /* XCRemoteSwiftPackageReference "AudioKit" */;

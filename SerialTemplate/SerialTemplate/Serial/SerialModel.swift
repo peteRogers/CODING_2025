@@ -24,7 +24,7 @@ import Observation
         if let v0 = values[0] {
            // val0 = v0 / 1024.0
             val0 = v0
-            print(val0)
+            //print(val0)
         }
         if let v1 = values[1] {
             val1 = v1 / 1024.0

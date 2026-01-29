@@ -1,3 +1,5 @@
+#include <Servo.h>
+
 #include <Unistep2.h>
 Unistep2 stepper(8,9,10,11, 4096, 800);
 int stepperpos;
@@ -28,7 +30,7 @@ void serialEvent() {
       inputLine += c;
     }
   }
-    xstepper.moveTo(stepperpos);
+    stepper.moveTo(stepperpos);
   }
 
 

@@ -8,15 +8,24 @@
 import AudioKit
 import AVFoundation
 import Observation
+import SoundpipeAudioKit
 
 @Observable class AudioController {
     private let engine = AudioEngine()
     private let mixer = Mixer()
     private let player = AudioPlayer()
+    private var pitch:PitchShifter!
    
     var playerVolume: Float = 1.0 {
         didSet {
             player.volume = playerVolume
+        }
+    }
+    
+    var pitchAmount: Float = 1.0 {
+        didSet {
+            let shift = pitchAmount.mapRange(inMin: 0.0, inMax: 1023.0, outMin: -10.0, outMax: 10.0)
+            pitch.shift = shift
         }
     }
  
@@ -24,7 +33,8 @@ import Observation
         do {
             try player.load(url: Bundle.main.url(forResource: "tropBird", withExtension: "wav")!, buffered: true)
             player.isLooping = true
-            mixer.addInput(player)
+            pitch = PitchShifter(player)
+            mixer.addInput(pitch)
             engine.output = mixer
             try engine.start()
             print("🎧 Engine started.")
@@ -35,14 +45,6 @@ import Observation
     }
     
     
-    //MARK: Arduino function
-
-    func receiveArduinoValues(values: [Int:Float]){
-        if let v0 = values[1] {
-            print("index 0 ->", v0)
-            playerVolume = v0.mapped(from: 0.0, 1023.0, to: 0.0, 1.0)
-        }
-    }
 
     //MARK: controlling functions
     
@@ -71,3 +73,16 @@ import Observation
 }
 
 
+extension Float {
+    /// Maps `self` from an input range to an output range (clamped to input range).
+    func mapRange(inMin: Float, inMax: Float, outMin: Float, outMax: Float) -> Float {
+        // Avoid divide-by-zero if inMin == inMax
+        let inRange = inMax - inMin
+        guard inRange != 0 else { return outMin }
+
+        let clampedValue = min(max(self, inMin), inMax)
+        let outRange = outMax - outMin
+        let scaled = (clampedValue - inMin) / inRange
+        return outMin + (scaled * outRange)
+    }
+}
