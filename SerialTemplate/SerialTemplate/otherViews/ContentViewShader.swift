@@ -42,6 +42,6 @@ struct ContentViewShader: View {
     }
 }
 
-#Preview {
-    ContentViewShader()
-}
+//#Preview {
+//    ContentViewShader()
+//}
